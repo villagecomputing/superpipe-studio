@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "superpipe-studio"
+version = "0.0.1"
+description = ""
+authors = ["Aman Dhesi <aman@stelolabs.com>"]
+license = "MIT"
+packages = [{ include = "studio" }]
+readme = "README.md"
+repository = "https://github.com/villagecomputing/superpipe-studio"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+httpx = "^0.27.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
