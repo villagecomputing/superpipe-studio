@@ -19,7 +19,6 @@ def insert_log(
         "parameters": parameters
     }
     client = get_client()
-    print("insert_log", data)
     response = client.post(logs_insert_url, json=data)
     return response
 
