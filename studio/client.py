@@ -8,7 +8,7 @@ _aclient = None
 
 headers = {}
 if 'SUPERPIPE_API_KEY' in os.environ:
-    headers['X_API_KEY_HEADER'] = os.environ['SUPERPIPE_API_KEY']
+    headers['X-API-KEY'] = os.environ['SUPERPIPE_API_KEY']
 
 
 def get_client():

@@ -5,6 +5,7 @@ from studio.urls import logs_insert_url
 def insert_log(
     inputs,
     steps,
+    final_output_columns,
     accuracy,
     fingerprint,
     name,
@@ -13,6 +14,7 @@ def insert_log(
     data = {
         "inputs": inputs,
         "steps": steps,
+        "final_output_columns": final_output_columns,
         "accuracy": accuracy,
         "fingerprint": fingerprint,
         "name": name,
@@ -31,6 +33,7 @@ def run_pipeline_with_log(run, pipeline):
         insert_log(
             inputs=inputs_list,
             steps=get_steps(pipeline, output),
+            final_output_columns=pipeline.output_fields,
             accuracy=0,
             fingerprint=pipeline.fingerprint(deep=True),
             name=pipeline.name,
@@ -59,4 +62,4 @@ def get_outputs_for_step(step, output):
     return [{
         "name": field,
         "value": str(output[field])
-    } for field in step.outputs()]
+    } for field in step.output_fields()]
