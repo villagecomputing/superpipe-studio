@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "superpipe-studio"
-version = "0.0.3"
+version = "0.0.4"
 description = ""
 authors = ["Aman Dhesi <aman@stelolabs.com>"]
 license = "MIT"
@@ -11,6 +11,7 @@ repository = "https://github.com/villagecomputing/superpipe-studio"
 [tool.poetry.dependencies]
 python = "^3.10"
 httpx = "^0.27.0"
+pandas = "^2.2.2"
 
 
 [build-system]
