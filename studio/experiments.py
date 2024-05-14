@@ -1,3 +1,4 @@
+import pandas as pd
 from studio.client import get_client
 from studio.urls import experiment_insert_url, experiment_create_url
 
@@ -6,12 +7,14 @@ def create_experiment(
         dataset_id: str,
         name: str,
         parameters: dict,
+        group_id: str,
         description: str = None):
     data = {
-        "dataset_id": dataset_id,
+        "datasetId": dataset_id,
         "name": name,
         "parameters": parameters,
-        "description": description
+        "groupId": group_id,
+        # "description": description TODO: handle sending up Nones
     }
     client = get_client()
     response = client.post(experiment_create_url, json=data)
@@ -38,12 +41,13 @@ def experiment_insert(
 
 
 def run_pipeline_with_experiment(experiment_id, run, pipeline):
-    def run_with_log(input):
+    def run_with_log(row: pd.Series):
         # note: the run function may modify the input in-place
-        output = run(input)
+        output = run(row)
         experiment_insert(
             id=experiment_id,
-            index=0,  # TODO
+            # TODO: this is a temporary hack, need to make sure the index lines up with the dataset index
+            index=row.name + 1,
             steps=get_steps(pipeline, output),
             final_output_columns=pipeline.output_fields,
             accuracy=0)  # TODO
