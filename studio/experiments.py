@@ -18,26 +18,32 @@ def create_experiment(
     }
     client = get_client()
     response = client.post(experiment_create_url, json=data)
+    if response.status_code != 200:
+        raise Exception(
+            f"Creating experiment failed with response {response.status_code}: {response.json()}")
     experiment_id = response.json().get('id')
     return experiment_id
 
 
 def experiment_insert(
     id,
-    index,
+    dataset_row_fingerprint,
     steps,
     final_output_columns,
     accuracy,
 ):
     data = {
-        "index": index,
+        "dataset_row_fingerprint": dataset_row_fingerprint,
         "steps": steps,
         "final_output_columns": final_output_columns,
         "accuracy": accuracy,
     }
     client = get_client()
     response = client.post(experiment_insert_url(id), json=data)
-    return response
+    if response.status_code != 200:
+        raise Exception(
+            f"Inserting experiment rows failed with response {response.status_code}: {response.json()}")
+    return response.json()
 
 
 def run_pipeline_with_experiment(experiment_id, run, pipeline):
@@ -46,8 +52,7 @@ def run_pipeline_with_experiment(experiment_id, run, pipeline):
         output = run(row)
         experiment_insert(
             id=experiment_id,
-            # TODO: this is a temporary hack, need to make sure the index lines up with the dataset index
-            index=row.name + 1,
+            dataset_row_fingerprint=row.name,
             steps=get_steps(pipeline, output),
             final_output_columns=pipeline.output_fields,
             accuracy=0)  # TODO
