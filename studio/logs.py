@@ -30,11 +30,15 @@ def run_pipeline_with_log(run, pipeline):
         inputs_list = [{"name": k, "value": str(v)} for k, v in input.items()]
         # note: the run function may modify the input in-place
         output = run(input)
+        if pipeline.evaluation_fn is not None:
+            accuracy = output[f"__{pipeline.evaluation_fn.__name__}__"]
+        else:
+            accuracy = None
         insert_log(
             inputs=inputs_list,
             steps=get_steps(pipeline, output),
             final_output_columns=pipeline.output_fields,
-            accuracy=0,
+            accuracy=accuracy,
             fingerprint=pipeline.fingerprint(deep=True),
             name=pipeline.name,
             parameters=pipeline.get_params())
