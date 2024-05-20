@@ -50,12 +50,16 @@ def run_pipeline_with_experiment(experiment_id, run, pipeline):
     def run_with_log(row: pd.Series):
         # note: the run function may modify the input in-place
         output = run(row)
+        if pipeline.evaluation_fn is not None:
+            accuracy = output[f"__{pipeline.evaluation_fn.__name__}__"]
+        else:
+            accuracy = None
         experiment_insert(
             id=experiment_id,
             dataset_row_fingerprint=row.name,
             steps=get_steps(pipeline, output),
             final_output_columns=pipeline.output_fields,
-            accuracy=0)  # TODO
+            accuracy=accuracy)
         return output
 
     return run_with_log
